@@ -12,10 +12,11 @@ class Message extends Model
 
     public function sender() {
       return $this->belongsTo('App\User', 'sender_id');
+      return $this->belongsToMany('App\User', 'message_user', 'message_id', 'recipient_id')->withPivot('is_starred', 'is_read')->withTimestamps();
     }
 
     public function recipients() {
-      return $this->belongsToMany('App\User', 'message_user', 'message_id', 'recipient_id')->withPivot('is_starred', 'is_read')->withTimestamps();
+      return $this->belongsToMany('App\User', 'message_user', 'message_id', 'recipient_id')->withPivot('is_starred', 'is_read', 'deleted_at')->withTimestamps();
     }
 
     public function prettySent() {

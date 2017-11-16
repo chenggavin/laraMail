@@ -8,12 +8,10 @@ use Carbon\Carbon;
 
 class MessageController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth');
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -34,8 +32,9 @@ class MessageController extends Controller
 
     public function trash() {
         $title = "Trash";
-        $messages = \Auth::user()->trash()->get();
-        return view('messages.to', compact('messages', 'title'));
+        $inboxTrash = \Auth::user()->inboxTrash()->get();
+        $sentTrash = \Auth::user()->sentTrash()->get();
+        return view('messages.trash', compact('inboxTrash', 'sentTrash', 'title'));
     }
 
     public function sent() {
@@ -55,8 +54,6 @@ class MessageController extends Controller
         }
         return view('messages.from', compact('messages', 'title'));
     }
-
-
     /**
      * Show the form for creating a new resource.
      *
@@ -158,7 +155,7 @@ class MessageController extends Controller
 
         }
         else if ( \Auth::user()->received->contains($id) == false ) {
-             $message = \Auth::user()->trash()->orderBy('id', 'desc')->get();
+             $message = \Auth::user()->inboxTrash()->orderBy('id', 'desc')->get();
              $message = \App\Message::find($id);
              $show_star = false;
 
@@ -204,14 +201,30 @@ class MessageController extends Controller
     public function destroy($id)
     {
         $message = \App\Message::find($id);
+
+        $sentMessage = \App\Message::find($id);
+
+        if ($sentMessage->is_deleted == false) {
+            $sentMessage->is_deleted = true;
+        }
+
+        else {
+            $sentMessage->is_deleted = false;
+        }
+
+
+        $sentMessage->save();
         $test = $message->recipients()->first()->pivot->deleted_at;
 
-        if ($test == null) {
+        if ($test === null) {
             $message->recipients()->updateExistingPivot(\Auth::user()->id, ['deleted_at' => Carbon::now()]);
+        
         }
         else {
             $message->recipients()->updateExistingPivot(\Auth::user()->id, ['deleted_at' => null]);
         }
+        $message->save();
+
         return redirect('/messages');
     }
 
