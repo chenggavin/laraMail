@@ -8,12 +8,10 @@ use Carbon\Carbon;
 
 class MessageController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth');
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -56,8 +54,6 @@ class MessageController extends Controller
         }
         return view('messages.from', compact('messages', 'title'));
     }
-
-
     /**
      * Show the form for creating a new resource.
      *
@@ -207,17 +203,28 @@ class MessageController extends Controller
         $message = \App\Message::find($id);
 
         $sentMessage = \App\Message::find($id);
-        $sentMessage->is_deleted = true;
-        $sentMessage->save();
 
+        if ($sentMessage->is_deleted == false) {
+            $sentMessage->is_deleted = true;
+        }
+
+        else {
+            $sentMessage->is_deleted = false;
+        }
+
+
+        $sentMessage->save();
         $test = $message->recipients()->first()->pivot->deleted_at;
 
-        if ($test == null) {
+        if ($test === null) {
             $message->recipients()->updateExistingPivot(\Auth::user()->id, ['deleted_at' => Carbon::now()]);
+        
         }
         else {
             $message->recipients()->updateExistingPivot(\Auth::user()->id, ['deleted_at' => null]);
         }
+        $message->save();
+
         return redirect('/messages');
     }
 
