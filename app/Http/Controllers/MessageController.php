@@ -223,6 +223,14 @@ class MessageController extends Controller
 
         $sentMessage = \App\Message::find($id);
 
+        $draftMessage = \App\Message::find($id);
+        //return $draftMessage->sent_at ;
+        if (($draftMessage->sender_id === \Auth::user()->id) && ($draftMessage->sent_at === null)){
+            
+            $draftMessage->delete();
+            return redirect('/messages/drafts');
+        }
+
         if ($sentMessage->is_deleted == false) {
             $sentMessage->is_deleted = true;
         }
@@ -234,6 +242,7 @@ class MessageController extends Controller
 
         $sentMessage->save();
         $test = $message->recipients()->first()->pivot->deleted_at;
+        
 
         if ($test === null) {
             $message->recipients()->updateExistingPivot(\Auth::user()->id, ['deleted_at' => Carbon::now()]);
