@@ -81,7 +81,10 @@
 
   @endif
 @endforeach
+
     <input name="recipients[]" type="hidden" value="{{ $message->sender_id }}">
+    
+    <input name="sender" type="hidden" value="{{ $message->sender_id }}">
 
 
   <input name="subject" type="hidden" value="{{ $message->subject }}">
@@ -90,7 +93,8 @@
           <textarea class="form-control" id="body" name="body" placeholder="Reply here" required></textarea>
       </div>
       <div class="form-group">
-          <button type="submit" name="button" value="send" class="btn btn-primary">Send</button>
+          <button type="submit" name="button" value="replyOne" class="btn btn-primary">Reply</button>
+          <button type="submit" name="button" value="replyAll" class="btn btn-primary">Reply All</button>
       </div>
 </form>
 
