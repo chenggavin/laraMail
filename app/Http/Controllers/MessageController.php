@@ -175,8 +175,11 @@ class MessageController extends Controller
      */
     public function edit($id)
     {
-        //
-        return view('messages.edit');
+        $message = \App\Message::find($id);
+
+        $recipients = \App\User::all();
+        $recipient = $message->recipients->find(\Auth::user()->id);
+        return view('messages.edit',compact('message','recipients'));
     }
 
     /**
@@ -188,8 +191,24 @@ class MessageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-        return "I should be saving an existing message now";
+        
+        $message = \App\Message::find($id);
+
+        $message->sender_id = \Auth::user()->id;
+        $message->subject = $request->input('subject');
+        $message->body = $request->input('body');
+
+        if ($request->input('button') === 'send') {
+            $message->sent_at = Carbon::now();
+        }
+
+        $message->save();
+
+        $message->recipients()->sync($request->input('recipients'));
+
+        return redirect('/messages');
+
+    
     }
 
     /**
