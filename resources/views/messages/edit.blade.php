@@ -29,10 +29,10 @@
     <div class="form-group">
       <label for="recipients" class="col-sm-2 control-label">Recipients</label>
       <div class="col-sm-10">
-        <select multiple name="recipients[]" class="form-control" required>
+        <select multiple name="recipients[]" value="{{ $message->recipients }}" class="form-control" required>
 
 @foreach ($recipients as $recipient)          
-          <option value={{ $recipient->id }}>{{ $recipient->name }}</option>
+          <option value={{ $recipient->id }} selected= "{{ $recipient->id }} "> {{ $recipient->name }} </option>
 @endforeach
 
         </select>

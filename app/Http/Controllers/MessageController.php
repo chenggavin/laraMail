@@ -178,8 +178,10 @@ class MessageController extends Controller
         $message = \App\Message::find($id);
 
         $recipients = \App\User::all();
+        // $test = \App\Message_User::all()->where('recipient_id'. '=' . '')
         $recipient = $message->recipients->find(\Auth::user()->id);
-        return view('messages.edit',compact('message','recipients'));
+        return view('messages.edit',compact('message','recipients',
+            'recipient'));
     }
 
     /**
@@ -195,6 +197,7 @@ class MessageController extends Controller
         $message = \App\Message::find($id);
 
         $message->sender_id = \Auth::user()->id;
+        $recipient = $message->recipients->find(\Auth::user()->id);
         $message->subject = $request->input('subject');
         $message->body = $request->input('body');
 
