@@ -106,11 +106,20 @@ class MessageController extends Controller
         if ( \Auth::user()->sent->contains($id) ) {
 
             // The logged-in user sent the message
+            $user = \Auth::user()->id;
 
             $message = \App\Message::find($id);
             $show_star = true;
             $star_class = '';
             $trash_class = '';
+
+            // dd($message);
+            // dd($message->recipients()->where('recipient_id', $user));
+
+            // $authorizedMessage = $message->recipients()->where('pivot_recipient_id', 3)->first();
+            
+            $authorizedMessage = $message->recipients()->first();
+
 
             if ( \Auth::user()->received->contains($id) ) {
                 $message->recipients()->updateExistingPivot(\Auth::user()->id, ['is_read' => true]);
@@ -125,14 +134,21 @@ class MessageController extends Controller
                 $show_star = false;
             }
 
-            return view('messages.show', compact('message', 'show_star', 'star_class', 'trash_class'));
+
+            return view('messages.show', compact('message', 'show_star', 'star_class', 'trash_class', 'authorizedMessage'));
 
         }
         else if ( \Auth::user()->received->contains($id) ) {
 
-            // The logged-in user received the message
 
+            // The logged-in user received the message->
+            $user = \Auth::user()->id;
             $message = \App\Message::find($id);
+
+            $authorizedMessage = $message->recipients()->where('recipient_id', $user)->first();
+
+            // dd($message->recipients()->where('recipient_id', $user));
+
             $message->recipients()->updateExistingPivot(\Auth::user()->id, ['is_read' => true]);
             $show_star = true;
             $star_class = '';
@@ -143,7 +159,7 @@ class MessageController extends Controller
                 $star_class = 'starred';
             }
 
-            return view('messages.show', compact('message', 'show_star', 'star_class', 'trash_class'));
+            return view('messages.show', compact('message', 'show_star', 'star_class', 'trash_class', 'authorizedMessage'));
 
         }
         else if ( \Auth::user()->drafts->contains($id) ) {
@@ -159,7 +175,14 @@ class MessageController extends Controller
              $message = \App\Message::find($id);
              $show_star = false;
 
-             return view('messages.show', compact('message', 'show_star'));
+             $user = \Auth::user()->id;
+             if($message->recipients()->where('recipient_id', $user)->first() != null){
+                $authorizedMessage = $message->recipients()->where('recipient_id', $user)->first();
+             }
+             else{
+                 $authorizedMessage = $message->recipients()->first();
+             }
+             return view('messages.show', compact('message', 'show_star', 'authorizedMessage'));
         }
         else {
             return redirect('/messages');
@@ -214,11 +237,20 @@ class MessageController extends Controller
 
 
         $sentMessage->save();
-        $test = $message->recipients()->first()->pivot->deleted_at;
+        
+        // $authorizedMessage = $message->recipients()->where('recipient_id', $user)->first();
+
+        $user = \Auth::user()->id;
+
+        if($message->recipients()->where('recipient_id', $user)->first() != null){
+            $test = $message->recipients()->where('recipient_id', $user)->first()->pivot->deleted_at;
+        }
+        else{
+            $test = $message->recipients()->first()->pivot->deleted_at;
+        }
 
         if ($test === null) {
             $message->recipients()->updateExistingPivot(\Auth::user()->id, ['deleted_at' => Carbon::now()]);
-        
         }
         else {
             $message->recipients()->updateExistingPivot(\Auth::user()->id, ['deleted_at' => null]);
