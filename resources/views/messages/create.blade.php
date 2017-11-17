@@ -2,7 +2,8 @@
 
 @section('title')
 
-  Create a New Message
+  Create a New Message 
+          <a href="/messages" class="btn btn-xs btn-default pull-right"><i class="fa fa-times fa-lg" aria-hidden="true"></i></a>
 
 @endsection
 
@@ -49,5 +50,4 @@
     </div>
 
   </form>
-
 @endsection
