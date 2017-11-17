@@ -4,9 +4,13 @@
 
   <a href="{{ URL::previous() }}" class="btn btn-xs btn-default">Back</a>
 
+
+
   <div class="pull-right">
 
     <form class="button-form" method="post" action="/messages/{{ $message->id }}">
+
+
       {{ csrf_field() }}
       {{ method_field('DELETE') }}
       <button class="btn btn-xs btn-default">
@@ -26,6 +30,11 @@
       <button class="btn btn-xs btn-default {{ $star_class }}"><strong>&#9734;</strong></button>
     </form>
 @endif
+ 
+  <form class="button-form" method="post" action="/messages/{{ $message->id }}/unread">
+          {{ csrf_field() }}
+     <button type="submit" name="button" value="unread" class="btn btn-default btn-xs"><i class="fa fa-envelope" aria-hidden="true" ></i></button>
+  </form>
 
   </div>
 
