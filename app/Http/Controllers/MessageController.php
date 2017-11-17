@@ -91,6 +91,14 @@ class MessageController extends Controller
             $message->recipients()->sync($request->input('sender'));
         }
 
+        else if ($request->input('button') === 'send') {
+            $message->recipients()->sync($request->input('recipients'));
+        }
+
+        else if ($request->input('button') === 'save') {
+            $message->recipients()->sync($request->input('recipients'));
+        }
+
         return redirect('/messages');
     
 
