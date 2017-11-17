@@ -16,7 +16,7 @@ class CreateMessagesTable extends Migration
             $table->integer('sender_id')->unsigned();
             $table->foreign('sender_id')->references('id')->on('users');
             $table->string('subject')->nullable();
-            $table->string('body')->nullable();
+            $table->text('body')->nullable();
             $table->datetime('sent_at')->nullable();
             $table->boolean('is_deleted')->default(false);
             $table->timestamps();
