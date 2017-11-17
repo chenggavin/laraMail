@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\DB;
+
+
 use Carbon\Carbon;
 
 class MessageController extends Controller
@@ -175,13 +178,17 @@ class MessageController extends Controller
      */
     public function edit($id)
     {
+        // $message = \App\Message::find($id);
+
         $message = \App\Message::find($id);
 
         $recipients = \App\User::all();
+
+        // $recipients = collect($recipients);
+       
         // $test = \App\Message_User::all()->where('recipient_id'. '=' . '')
-        $recipient = $message->recipients->find(\Auth::user()->id);
-        return view('messages.edit',compact('message','recipients',
-            'recipient'));
+        // $theRecipient = $message->recipients->find(\Auth::user()->id);
+        return view('messages.edit',compact('message','recipients'));
     }
 
     /**

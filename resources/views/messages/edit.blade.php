@@ -31,8 +31,14 @@
       <div class="col-sm-10">
         <select multiple name="recipients[]" value="{{ $message->recipients }}" class="form-control" required>
 
-@foreach ($recipients as $recipient)          
-          <option value={{ $recipient->id }} selected= "{{ $recipient->id }} "> {{ $recipient->name }} </option>
+@foreach ($recipients as $recipient)
+
+      @if ($message->recipients->contains('id', $recipient->id))
+        <option value="{{ $recipient->id }}" selected> {{ $recipient->name }}</option>
+      @else
+        <option value="{{ $recipient->id }}"> {{ $recipient->name }}</option>
+      @endif
+
 @endforeach
 
         </select>
