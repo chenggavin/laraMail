@@ -1,9 +1,7 @@
 <?php
-
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-
 class CreateMessagesTable extends Migration
 {
     /**
@@ -18,13 +16,12 @@ class CreateMessagesTable extends Migration
             $table->integer('sender_id')->unsigned();
             $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('subject')->nullable();
-            $table->string('body')->nullable();
+            $table->text('body')->nullable();
             $table->datetime('sent_at')->nullable();
             $table->boolean('is_deleted')->default(false);
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *
