@@ -306,4 +306,13 @@ class MessageController extends Controller
 
     }
 
+    public function starInbox($id) 
+    {
+        $message = \App\Message::find($id);
+        $recipient = $message->recipients->find(\Auth::user()->id);
+        $message->recipients()->updateExistingPivot(\Auth::user()->id, ['is_starred' => !$recipient->pivot->is_starred]);
+        return redirect('/messages');
+
+    }
+
 }
