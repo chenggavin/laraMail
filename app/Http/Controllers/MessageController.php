@@ -168,7 +168,7 @@ class MessageController extends Controller
             return view('messages.edit', compact('message'));
 
         }
-        else if ( \Auth::user()->received->contains($id) == false ) {
+        else if ( \App\Message::find($id)->is_deleted === true || \App\Message::find($id)->recipients()->first()->pivot->deleted_at != null   ) {
              $message = \Auth::user()->inboxTrash()->orderBy('id', 'desc')->get();
              $message = \App\Message::find($id);
              $show_star = false;
