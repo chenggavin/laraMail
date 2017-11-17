@@ -103,30 +103,23 @@ class MessageController extends Controller
 
         // Ack! Deleted records don't show!
         
-        if ( \Auth::user()->sent->contains($id) ) {
-
+       if ( \Auth::user()->sent->contains($id) ) {
             // The logged-in user sent the message
-
             $message = \App\Message::find($id);
-            $show_star = true;
+            $show_star = false;
             $star_class = '';
             $trash_class = '';
-
+            if ((url()->previous() === url("/messages")) || (url()->previous() === url("/messages/{$message->id}"))) {
+                $show_star = true;
+            }
             if ( \Auth::user()->received->contains($id) ) {
                 $message->recipients()->updateExistingPivot(\Auth::user()->id, ['is_read' => true]);
-
                 $recipient = $message->recipients->find(\Auth::user()->id);
                 if ($recipient->pivot->is_starred) {
                     $star_class = 'starred';
                 }
-
             }
-            else {
-                $show_star = false;
-            }
-
             return view('messages.show', compact('message', 'show_star', 'star_class', 'trash_class'));
-
         }
         else if ( \Auth::user()->received->contains($id) ) {
 
