@@ -72,8 +72,21 @@
 <hr>
 <form method="POST" action="/messages">
                         {{ csrf_field() }}
-                  
-  <input name="recipients[]" type="hidden" value="{{ $message->sender_id }}">
+    
+@foreach($message->recipients()->get() as $recipient)
+  @if ($recipient->id !== \Auth::user()->id ) 
+
+
+  <input name="recipients[]" type="hidden" value="{{ $recipient->id }}">
+
+  @endif
+@endforeach
+
+    <input name="recipients[]" type="hidden" value="{{ $message->sender_id }}">
+    
+    <input name="sender" type="hidden" value="{{ $message->sender_id }}">
+
+
   <input name="subject" type="hidden" value="{{ $message->subject }}">
       <div class="form-group">
           <label for="messageContent"></label>
@@ -87,7 +100,8 @@
           </div>
       </div>
       <div class="form-group">
-          <button type="submit" name="button" value="send" class="btn btn-primary">Send</button>
+          <button type="submit" name="button" value="replyOne" class="btn btn-primary">Reply</button>
+          <button type="submit" name="button" value="replyAll" class="btn btn-primary">Reply All</button>
       </div>
 </form>
 
