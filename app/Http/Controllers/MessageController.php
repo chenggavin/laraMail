@@ -237,11 +237,20 @@ class MessageController extends Controller
 
 
         $sentMessage->save();
-        $test = $message->recipients()->first()->pivot->deleted_at;
+        
+        // $authorizedMessage = $message->recipients()->where('recipient_id', $user)->first();
+
+        $user = \Auth::user()->id;
+
+        if($message->recipients()->where('recipient_id', $user)->first() != null){
+            $test = $message->recipients()->where('recipient_id', $user)->first()->pivot->deleted_at;
+        }
+        else{
+            $test = $message->recipients()->first()->pivot->deleted_at;
+        }
 
         if ($test === null) {
             $message->recipients()->updateExistingPivot(\Auth::user()->id, ['deleted_at' => Carbon::now()]);
-        
         }
         else {
             $message->recipients()->updateExistingPivot(\Auth::user()->id, ['deleted_at' => null]);
