@@ -123,7 +123,7 @@ class MessageController extends Controller
 
         // Ack! Deleted records don't show!
         
-       if ( \Auth::user()->sent->contains($id) ) {
+       if ( url()->previous() === url("/sent") ) {
             // The logged-in user sent the message
             $message = \App\Message::find($id);
             $show_star = false;
