@@ -14,9 +14,9 @@ class CreateMessageUserTable extends Migration
         Schema::create('message_user', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('message_id')->unsigned();
-            $table->foreign('message_id')->references('id')->on('messages');
+            $table->foreign('message_id')->references('id')->on('messages')->onDelete('cascade');
             $table->integer('recipient_id')->unsigned();
-            $table->foreign('recipient_id')->references('id')->on('users');
+            $table->foreign('recipient_id')->references('id')->on('users')->onDelete('cascade');
             $table->boolean('is_starred')->nullable()->default(false);
             $table->boolean('is_read')->nullable()->default(false);
             $table->softDeletes();
