@@ -111,7 +111,9 @@ On {{ $message->prettySent() }}, {{ $message->sender()->first()->name }} wrote:
       </div>
       <div class="form-group">
           <button type="submit" name="button" value="replyOne" class="btn btn-primary">Reply</button>
+          @if (count($message->recipients()->get()) > 1 )
           <button type="submit" name="button" value="replyAll" class="btn btn-primary">Reply All</button>
+          @endif
       </div>
 </form>
 
