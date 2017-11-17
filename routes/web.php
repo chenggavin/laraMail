@@ -31,5 +31,7 @@ Route::post('/messages/{id}/star', 'MessageController@star');
 
 Route::post('/messages/{id}/unread', 'MessageController@unread');
 
+Route::post('/messages/{id}/starInbox', 'MessageController@starInbox');
+
 Route::resource('/messages', 'MessageController');
 

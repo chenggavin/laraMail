@@ -13,9 +13,12 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/font-awesome.css') }}" rel="stylesheet">
+
 
     <!-- Font Awesome -->
-    <script src="https://use.fontawesome.com/14f1f2c704.js"></script>
+<!--     <script src="https://use.fontawesome.com/14f1f2c704.js"></script>
+ -->
 </head>
 <body>
     <div id="app">
