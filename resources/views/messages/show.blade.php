@@ -10,7 +10,13 @@
       {{ csrf_field() }}
       {{ method_field('DELETE') }}
       <button class="btn btn-xs btn-default">
-        <i class="fa fa-trash" aria-hidden="true"></i>
+
+        @if ($authorizedMessage->pivot->deleted_at != null)
+          <i class="fa fa-undo" aria-hidden="true"></i>
+        @else
+          <i class="fa fa-trash" aria-hidden="true"></i>
+        @endif
+
       </button>
     </form>
 
