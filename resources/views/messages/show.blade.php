@@ -77,7 +77,14 @@
   <input name="subject" type="hidden" value="{{ $message->subject }}">
       <div class="form-group">
           <label for="messageContent"></label>
-          <textarea class="form-control" id="body" name="body" placeholder="Reply here" required></textarea>
+          <div contenteditable="true" class="form-control editable" id="body" name="body" placeholder="Reply here" required>
+          <br><br><hr>
+
+            <p>On {{ $message->prettySent() }}, {{ $message->sender()->first()->name }} wrote:</p>
+            <p style="margin-left: 20px;">{{ $message->body }} </p>
+
+
+          </div>
       </div>
       <div class="form-group">
           <button type="submit" name="button" value="send" class="btn btn-primary">Send</button>
