@@ -12,7 +12,7 @@
       <button class="btn btn-xs btn-default">
         @if ($authorizedMessage->pivot->deleted_at != null)
           <i class="fa fa-undo" aria-hidden="true"></i>
-        @elseif($message->is_deleted == true)
+        @elseif($message->is_deleted == true &&  $authorizedMessage->pivot->deleted_at != null)
           <i class="fa fa-undo" aria-hidden="true"></i>
         @else
           <i class="fa fa-trash" aria-hidden="true"></i>

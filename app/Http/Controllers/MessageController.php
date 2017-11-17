@@ -21,6 +21,7 @@ class MessageController extends Controller
     {
         $title = "Inbox";
         $messages = \Auth::user()->received()->orderBy('id', 'desc')->get();
+       
         return view('messages.to', compact('messages', 'title'));
     }
 
