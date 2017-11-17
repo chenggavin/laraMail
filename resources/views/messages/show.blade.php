@@ -84,13 +84,15 @@
 
 
   <input name="recipients[]" type="hidden" value="{{ $recipient->id }}">
+  <input name="sender" type="hidden" value="{{ $recipient->id }}">
+
+  @else
+  <input name="sender" type="hidden" value="{{ $message->sender_id }}">
 
   @endif
 @endforeach
 
-    <input name="recipients[]" type="hidden" value="{{ $message->sender_id }}">
-    
-    <input name="sender" type="hidden" value="{{ $message->sender_id }}">
+
 
 
   <input name="subject" type="hidden" value="{{ $message->subject }}">
