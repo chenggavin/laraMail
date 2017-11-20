@@ -80,14 +80,20 @@
                         {{ csrf_field() }}
     
 @foreach($message->recipients()->get() as $recipient)
-  @if ($recipient->id !== \Auth::user()->id ) 
+   @if ($recipient->id !== \Auth::user()->id ) 
 
 
   <input name="recipients[]" type="hidden" value="{{ $recipient->id }}">
   <input name="sender" type="hidden" value="{{ $recipient->id }}">
 
+  @elseif ($message->sender_id !== \Auth::user()->id)
+
+  <input name="recipients[]" type="hidden" value="{{ $recipient->id }}">
+  <input name="sender" type="hidden" value="{{ $message->sender_id }}">
+
   @else
   <input name="sender" type="hidden" value="{{ $message->sender_id }}">
+  <input name="recipients[]" type="hidden" value="{{ $message->sender_id}}">
 
   @endif
 @endforeach
