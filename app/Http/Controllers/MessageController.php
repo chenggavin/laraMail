@@ -197,7 +197,6 @@ class MessageController extends Controller
              return view('messages.show', compact('message', 'show_star', 'authorizedMessage'));
         }
         else {
-            dd(\App\Message::find($id)->recipients()->where('recipient_id', \Auth::user()->id)->first()->pivot->deleted_at);
             return redirect('/messages');
         }
 
