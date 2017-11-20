@@ -38,6 +38,7 @@ class MessageController extends Controller
         $title = "Trash";
         $inboxTrash = \Auth::user()->inboxTrash()->orderBy('id', 'desc')->get();
         $sentTrash = \Auth::user()->sentTrash()->orderBy('id', 'desc')->get();
+
         return view('messages.trash', compact('inboxTrash', 'sentTrash', 'title'));
     }
 
@@ -267,7 +268,7 @@ class MessageController extends Controller
             return redirect('/messages/drafts');
         }
 
-        if ($sentMessage->is_deleted == false) {
+        if ($sentMessage->is_deleted == false && $sentMessage->sender_id== \Auth::user()->id) {
             $sentMessage->is_deleted = true;
         }
 
