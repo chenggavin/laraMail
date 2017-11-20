@@ -32,7 +32,7 @@
 
     <form class="button-form" method="post" action="/messages/{{ $message->id }}/unread">
             {{ csrf_field() }}
-       <button type="submit" name="button" value="unread" class="btn btn-default btn-xs"><i class="fa fa-envelope" aria-hidden="true" ></i></button>
+       <button type="submit" name="button" value="unread" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="top" title="Mark as unread"><i class="fa fa-envelope" aria-hidden="true" ></i></button>
     </form>
 @endif
  
