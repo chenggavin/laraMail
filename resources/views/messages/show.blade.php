@@ -14,7 +14,7 @@
       {{ csrf_field() }}
       {{ method_field('DELETE') }}
       <button class="btn btn-xs btn-default">
-        @if ($authorizedMessage->pivot->deleted_at != null)
+        @if ($authorizedMessage->pivot->deleted_at != null && $authorizedMessage->pivot->recipient_id == \Auth::user()->id)
           <i class="fa fa-undo" aria-hidden="true"></i>
         @elseif($message->is_deleted == true &&  $authorizedMessage->pivot->deleted_at != null)
           <i class="fa fa-undo" aria-hidden="true"></i>
