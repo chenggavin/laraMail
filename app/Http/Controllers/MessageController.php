@@ -45,9 +45,11 @@ class MessageController extends Controller
         $title = "Sent";
         $messages = \Auth::user()->sent()->orderBy('id', 'desc')->get();
         foreach ($messages as $message) {
-            $message->link = '/messages/' . $message->id; 
+            $message->link = '/messages/' . $message->id;
+            $backURL = url("messages"); 
         }
-        return view('messages.from', compact('messages', 'title'));
+
+        return view('messages.from', compact('messages', 'title','backURL'));
     }
 
     public function drafts() {
@@ -123,28 +125,41 @@ class MessageController extends Controller
     {
 
         // Ack! Deleted records don't show!
+        if (url()->previous() === url("messages/sent")){
+            $backURL = url("messages/sent");
+        }elseif (url()->previous() === url("messages/starred")) {
+            $backURL = url("messages/starred");
+        }else{
+            $backURL = url("messages");
+        }
         
-       if ( \Auth::user()->sent->contains($id) ) {
+        if ( \Auth::user()->sent->contains($id) ) {
             // The logged-in user sent the message
             $message = \App\Message::find($id);
             $show_star = false;
             $star_class = '';
             $trash_class = '';
+           
 
             $user = \Auth::user()->id;
             $authorizedMessage = $message->recipients()->first();
 
             if ((url()->previous() === url("/messages")) || (url()->previous() === url("/messages/{$message->id}"))) {
                 $show_star = true;
+               
+
             }
             if ( \Auth::user()->received->contains($id) ) {
                 $message->recipients()->updateExistingPivot(\Auth::user()->id, ['is_read' => true]);
                 $recipient = $message->recipients->find(\Auth::user()->id);
                 if ($recipient->pivot->is_starred) {
                     $star_class = 'starred';
+                    
                 }
             }
-            return view('messages.show', compact('message', 'show_star', 'star_class', 'trash_class', 'authorizedMessage'));
+            
+
+            return view('messages.show', compact('message', 'show_star', 'star_class', 'trash_class', 'authorizedMessage','backURL'));
         }
         else if ( \Auth::user()->received->contains($id) ) {
 
@@ -165,7 +180,9 @@ class MessageController extends Controller
                 $star_class = 'starred';
             }
 
-            return view('messages.show', compact('message', 'show_star', 'star_class', 'trash_class', 'authorizedMessage'));
+            
+
+            return view('messages.show', compact('message', 'show_star', 'star_class', 'trash_class', 'authorizedMessage','backURL'));
 
         }
         else if ( \Auth::user()->drafts->contains($id) ) {
@@ -173,7 +190,10 @@ class MessageController extends Controller
             // The logged-in user is writing the message
 
             $message = \App\Message::find($id);
-            return view('messages.edit', compact('message'));
+            $backURL = url("messages/sent");
+           
+            return view('messages.edit', compact('message','backURL'));
+
 
         }
         else if ( \App\Message::find($id)->is_deleted === true || \App\Message::find($id)->recipients()->first()->pivot->deleted_at != null   ) {
@@ -188,7 +208,8 @@ class MessageController extends Controller
              else{
                  $authorizedMessage = $message->recipients()->first();
              }
-             return view('messages.show', compact('message', 'show_star', 'authorizedMessage'));
+             // $backURL = url("messages");
+             return view('messages.show', compact('message', 'show_star', 'authorizedMessage','backURL'));
         }
         else {
             return redirect('/messages');
@@ -214,7 +235,8 @@ class MessageController extends Controller
        
         // $test = \App\Message_User::all()->where('recipient_id'. '=' . '')
         // $theRecipient = $message->recipients->find(\Auth::user()->id);
-        return view('messages.edit',compact('message','recipients'));
+        $backURL = url("messages/drafts");
+        return view('messages.edit',compact('message','recipients','backURL'));
     }
 
     /**
