@@ -87,11 +87,13 @@ class MessageController extends Controller
 
         if ($request->input('button') === 'replyAll') {
             $message->sent_at = Carbon::now();
+            $message->subject= "RE: " . $message->subject;
             $message->save();
             $message->recipients()->sync($request->input('recipients'));
         }
         else if ($request->input('button') === 'replyOne') {
                 $message->sent_at = Carbon::now();
+                $message->subject= "RE: " . $message->subject;
                 $message->save();
                 $message->recipients()->sync($request->input('sender'));
         }
@@ -125,7 +127,7 @@ class MessageController extends Controller
 
         // Ack! Deleted records don't show!
         
-       if ( \Auth::user()->sent->contains($id) ) {
+       if ( url()->previous() === url("/messages/sent") ) {
             // The logged-in user sent the message
             $message = \App\Message::find($id);
             $show_star = false;
@@ -313,11 +315,20 @@ class MessageController extends Controller
 
     }
 
+
+    public function unread($id) 
+    {
+        $message = \App\Message::find($id);
+        $recipient = $message->recipients->find(\Auth::user()->id);
+        $message->recipients()->updateExistingPivot(\Auth::user()->id, ['is_read' => false]);
+        return redirect('/messages');
+    }
     public function starInbox($id) 
     {
         $message = \App\Message::find($id);
         $recipient = $message->recipients->find(\Auth::user()->id);
         $message->recipients()->updateExistingPivot(\Auth::user()->id, ['is_starred' => !$recipient->pivot->is_starred]);
+
         return redirect('/messages');
 
     }
