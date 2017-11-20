@@ -1,7 +1,7 @@
 @extends('layouts.app-panel')
 
 @section('title')
-	<a href="{{ URL::previous() }}" class="btn btn-xs btn-default">Back</a>
+	<a href="{{ $backURL }}" class="btn btn-xs btn-default">Back</a>
 
    <div class="pull-right">
 
