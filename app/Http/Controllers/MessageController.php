@@ -129,6 +129,8 @@ class MessageController extends Controller
             $backURL = url("messages/sent");
         }elseif (url()->previous() === url("messages/starred")) {
             $backURL = url("messages/starred");
+        }elseif(url()->previous() === url("messages/trash")){
+            $backURL = url("messages/trash");
         }else{
             $backURL = url("messages");
         }
