@@ -116,10 +116,16 @@ On {{ $message->prettySent() }}, {{ $message->sender()->first()->name }} wrote:
           </textarea>
       </div>
       <div class="form-group">
-          <button type="submit" name="button" value="replyOne" class="btn btn-primary">Reply</button>
-          @if (count($message->recipients()->get()) > 1 )
-          <button type="submit" name="button" value="replyAll" class="btn btn-primary">Reply All</button>
+
+        @if (count($message->recipients()->get()) > 1)
+          @if ($message->sender_id !== \Auth::user()->id)
+             <button type="submit" name="button" value="replyOne" class="btn btn-primary">Reply</button>
           @endif
+            <button type="submit" name="button" value="replyAll" class="btn btn-primary">Reply All</button>
+        @else
+            <button type="submit" name="button" value="replyOne" class="btn btn-primary">Reply</button>
+        @endif
+
       </div>
 </form>
 
