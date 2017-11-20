@@ -177,7 +177,12 @@ class MessageController extends Controller
             return view('messages.edit', compact('message'));
 
         }
-        else if ( \App\Message::find($id)->is_deleted === true || \App\Message::find($id)->recipients()->first()->pivot->deleted_at != null   ) {
+        else if ( \App\Message::find($id)->is_deleted === true ||
+                  \App\Message::find($id)->recipients()->where('recipient_id', \Auth::user()->id)->first()->pivot->deleted_at != null && 
+                  \Auth::user()->id === \App\Message::find($id)->recipients()->where('recipient_id', \Auth::user()->id)->first()->id ) {
+
+             // The message has been deleted
+
              $message = \Auth::user()->inboxTrash()->orderBy('id', 'desc')->get();
              $message = \App\Message::find($id);
              $show_star = false;
@@ -192,6 +197,7 @@ class MessageController extends Controller
              return view('messages.show', compact('message', 'show_star', 'authorizedMessage'));
         }
         else {
+            dd(\App\Message::find($id)->recipients()->where('recipient_id', \Auth::user()->id)->first()->pivot->deleted_at);
             return redirect('/messages');
         }
 
