@@ -24,6 +24,7 @@ class MessageController extends Controller
     {
         $title = "Inbox";
         $messages = \Auth::user()->received()->orderBy('id', 'desc')->get();
+       
         return view('messages.to', compact('messages', 'title'));
     }
 
@@ -306,11 +307,20 @@ class MessageController extends Controller
 
     }
 
+
     public function unread($id) 
     {
         $message = \App\Message::find($id);
         $recipient = $message->recipients->find(\Auth::user()->id);
         $message->recipients()->updateExistingPivot(\Auth::user()->id, ['is_read' => false]);
+        return redirect('/messages');
+    }
+    public function starInbox($id) 
+    {
+        $message = \App\Message::find($id);
+        $recipient = $message->recipients->find(\Auth::user()->id);
+        $message->recipients()->updateExistingPivot(\Auth::user()->id, ['is_starred' => !$recipient->pivot->is_starred]);
+
         return redirect('/messages');
 
     }
