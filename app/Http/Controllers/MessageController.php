@@ -86,11 +86,13 @@ class MessageController extends Controller
 
         if ($request->input('button') === 'replyAll') {
             $message->sent_at = Carbon::now();
+            $message->subject= "RE: " . $message->subject;
             $message->save();
             $message->recipients()->sync($request->input('recipients'));
         }
         else if ($request->input('button') === 'replyOne') {
                 $message->sent_at = Carbon::now();
+                $message->subject= "RE: " . $message->subject;
                 $message->save();
                 $message->recipients()->sync($request->input('sender'));
         }
