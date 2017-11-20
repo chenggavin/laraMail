@@ -93,17 +93,25 @@
                         {{ csrf_field() }}
     
 @foreach($message->recipients()->get() as $recipient)
-  @if ($recipient->id !== \Auth::user()->id ) 
+   @if ($recipient->id !== \Auth::user()->id ) 
 
 
   <input name="recipients[]" type="hidden" value="{{ $recipient->id }}">
+  <input name="sender" type="hidden" value="{{ $recipient->id }}">
+
+  @elseif ($message->sender_id !== \Auth::user()->id)
+
+  <input name="recipients[]" type="hidden" value="{{ $recipient->id }}">
+  <input name="sender" type="hidden" value="{{ $message->sender_id }}">
+
+  @else
+  <input name="sender" type="hidden" value="{{ $message->sender_id }}">
+  <input name="recipients[]" type="hidden" value="{{ $message->sender_id}}">
 
   @endif
 @endforeach
 
-    <input name="recipients[]" type="hidden" value="{{ $message->sender_id }}">
-    
-    <input name="sender" type="hidden" value="{{ $message->sender_id }}">
+
 
 
   <input name="subject" type="hidden" value="{{ $message->subject }}">
@@ -121,8 +129,16 @@ On {{ $message->prettySent() }}, {{ $message->sender()->first()->name }} wrote:
           </textarea>
       </div>
       <div class="form-group">
-          <button type="submit" name="button" value="replyOne" class="btn btn-primary">Reply</button>
-          <button type="submit" name="button" value="replyAll" class="btn btn-primary">Reply All</button>
+
+        @if (count($message->recipients()->get()) > 1)
+          @if ($message->sender_id !== \Auth::user()->id)
+             <button type="submit" name="button" value="replyOne" class="btn btn-primary">Reply</button>
+          @endif
+            <button type="submit" name="button" value="replyAll" class="btn btn-primary">Reply All</button>
+        @else
+            <button type="submit" name="button" value="replyOne" class="btn btn-primary">Reply</button>
+        @endif
+
       </div>
 </form>
 
