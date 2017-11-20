@@ -24,6 +24,8 @@ class MessageController extends Controller
     {
         $title = "Inbox";
         $messages = \Auth::user()->received()->orderBy('id', 'desc')->get();
+        $inbox = 1;
+        $starred_box = 0;
        
         return view('messages.to', compact('messages', 'title'));
     }
@@ -31,6 +33,8 @@ class MessageController extends Controller
     public function starred() {
         $title = "Starred";
         $messages = \Auth::user()->starred()->orderBy('id', 'desc')->get();
+        $inbox = 0;
+        $starred_box = 1;
         return view('messages.to', compact('messages', 'title'));
     }
 
@@ -124,13 +128,13 @@ class MessageController extends Controller
     public function show($id)
     {
 
-        // Ack! Deleted records don't show!
+
         if (url()->previous() === url("messages/sent")){
             $backURL = url("messages/sent");
-        }elseif (url()->previous() === url("messages/starred")) {
-            $backURL = url("messages/starred");
         }elseif(url()->previous() === url("messages/trash")){
             $backURL = url("messages/trash");
+        }elseif(url()->previous() === url("messages/starred")){
+            $backURL = url("messages/starred");
         }else{
             $backURL = url("messages");
         }
@@ -150,7 +154,7 @@ class MessageController extends Controller
 
             if ((url()->previous() === url("/messages")) || (url()->previous() === url("/messages/{$message->id}"))) {
                 $show_star = true;
-               
+                
 
             }
             if ( \Auth::user()->received->contains($id) ) {
@@ -160,10 +164,12 @@ class MessageController extends Controller
                     $star_class = 'starred';
                     
                 }
+
+                
             }
             
 
-            return view('messages.show', compact('message', 'show_star', 'star_class', 'trash_class', 'authorizedMessage','backURL'));
+            return view('messages.show', compact('message', 'show_star', 'star_class', 'trash_class', 'authorizedMessage','backURL','inbox','starred_box'));
         }
         else if ( \Auth::user()->received->contains($id) ) {
 
@@ -182,11 +188,12 @@ class MessageController extends Controller
             $recipient = $message->recipients->find(\Auth::user()->id);
             if ($recipient->pivot->is_starred) {
                 $star_class = 'starred';
+
             }
 
             
 
-            return view('messages.show', compact('message', 'show_star', 'star_class', 'trash_class', 'authorizedMessage','backURL'));
+            return view('messages.show', compact('message', 'show_star', 'star_class', 'trash_class', 'authorizedMessage','backURL','inbox','starred_box'));
 
         }
         else if ( \Auth::user()->drafts->contains($id) ) {
@@ -196,7 +203,7 @@ class MessageController extends Controller
             $message = \App\Message::find($id);
             $backURL = url("messages/sent");
            
-            return view('messages.edit', compact('message','backURL'));
+            return view('messages.edit', compact('message','backURL','inbox','starred_box'));
 
 
         }
@@ -213,10 +220,10 @@ class MessageController extends Controller
                  $authorizedMessage = $message->recipients()->first();
              }
              // $backURL = url("messages");
-             return view('messages.show', compact('message', 'show_star', 'authorizedMessage','backURL'));
+             return view('messages.show', compact('message', 'show_star', 'authorizedMessage','backURL','inbox','starred_box'));
         }
         else {
-            return redirect('/messages');
+            return redirect('/messages','inbox','starred_box');
         }
 
     }
@@ -240,7 +247,7 @@ class MessageController extends Controller
         // $test = \App\Message_User::all()->where('recipient_id'. '=' . '')
         // $theRecipient = $message->recipients->find(\Auth::user()->id);
         $backURL = url("messages/drafts");
-        return view('messages.edit',compact('message','recipients','backURL'));
+        return view('messages.edit',compact('message','recipients','backURL','inbox','starred_box'));
     }
 
     /**
@@ -329,6 +336,8 @@ class MessageController extends Controller
         $message = \App\Message::find($id);
         $recipient = $message->recipients->find(\Auth::user()->id);
         $message->recipients()->updateExistingPivot(\Auth::user()->id, ['is_starred' => !$recipient->pivot->is_starred]);
+        $starred_box = 1;
+        $inbox = 0;
         return redirect('/messages/' . $id);
 
     }
