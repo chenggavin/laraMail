@@ -103,7 +103,9 @@ class MessageController extends Controller
             if (!$includeSelf) {
                 $message->recipients()->detach($message->sender_id);
             } else {
-                $message->recipients()->attach($request->input('sender'));
+                if (!$message->recipients->contains($request->input('sender'))) {
+                    $message->recipients()->attach($request->input('sender'));
+                }
                 $message->recipients()->detach($message->sender_id);
             }
 
