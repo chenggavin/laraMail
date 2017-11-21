@@ -95,7 +95,16 @@ class MessageController extends Controller
             $message->sent_at = Carbon::now();
             $message->subject= "RE: " . $message->subject;
             $message->save();
+
             $message->recipients()->sync($request->input('recipients'));
+
+            $message->recipients()->detach($message->sender_id);
+
+            if (!$message->recipients->contains($request->input('sender'))) {
+                $message->recipients()->attach($request->input('sender'));
+            }
+                
+
         }
         else if ($request->input('button') === 'replyOne') {
                 $message->sent_at = Carbon::now();
