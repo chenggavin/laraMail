@@ -91,25 +91,13 @@ class MessageController extends Controller
             $message->save();
 
             $message->recipients()->sync($request->input('recipients'));
-            $recipients = $message->recipients()->get();
 
-            $includeSelf = false;
-            foreach($recipients as $recipient) {
-                if ($recipient->id === $message->sender_id) {
-                    $includeSelf = true;
-                }
+            $message->recipients()->detach($message->sender_id);
+
+            if (!$message->recipients->contains($request->input('sender'))) {
+                $message->recipients()->attach($request->input('sender'));
             }
-
-            if (!$includeSelf) {
-                $message->recipients()->detach($message->sender_id);
-            } else {
-                if (!$message->recipients->contains($request->input('sender'))) {
-                    $message->recipients()->attach($request->input('sender'));
-                }
-                $message->recipients()->detach($message->sender_id);
-            }
-
-
+                
 
         }
         else if ($request->input('button') === 'replyOne') {
