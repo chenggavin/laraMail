@@ -80,7 +80,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Mail Thing
+                    LaraMail
                 </div>
                 <div class="subtitle">
                     A self-contained messaging system for use in other applications
